@@ -1,0 +1,2 @@
+# SimpleCG
+Simplified CRUD Generator
