@@ -54,8 +54,13 @@ if(file_exists("config.json")){
     if($result == false){
         echo "Error: ".mysqli_error($mylink);
     }
-echo "Creating list page...";
-$list_page = '
+# LIST PAGE
+echo "Creating list page...".PHP_EOL;
+$list_page = '<?PHP
+session_start();
+?>
+<!DOCTYPE html>
+<html lang="en">
 <?PHP
 $sql_config = json_decode(file_get_contents("./config/sql.json"),true);
 $mylink = mysqli_connect($sql_config["host"], $sql_config["username"], $sql_config["password"], $sql_config["database"]);
@@ -75,6 +80,50 @@ while ($row = mysqli_fetch_row($result)){
 }
 ?>';
 file_put_contents("./output/list.php",$list_page);
+
+
+#AUTHENTICATION PAGE
+echo "Creating auth page...".PHP_EOL;
+$auth_page = '<?PHP
+session_start();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<?PHP
+$auth_config = json_decode(file_get_contents("./config/auth.json"), true);
+if(isset($_SESSION["username"]) && isset($_SESSION["password"])){
+    if($_SESSION["username"] == $auth_config["admin_user"] && $_SESSION["password"] == $auth_config["admin_pw"]){
+        if(isset($_GET["redir"])){
+            echo "<meta http-equiv=refresh content='."'".'0;URL=".$_GET["redir"]."'."'".' /> ";
+        }
+    }
+}
+if(isset($_POST["username"]) && isset($_POST["password"])){
+    if($_POST["username"] == $auth_config["admin_user"]){
+        if(hash("whirlpool",$_POST["password"]) == $auth_config["admin_pw"]){
+            $_SESSION["username"] = $_POST["username"];
+            $_SESSION["password"] = $auth_config["admin_pw"];
+        }else{
+            echo "<b>Wrong Password</b>";
+        }
+    }else{
+        echo "<b>Wrong Password</b>";
+    }
+}
+
+
+
+?>
+<form action="auth.php" method="post">
+<input type="text" name="username" />
+<br>
+<input type="password" name="password" />
+<br>
+<button>Submit</button>
+</form>
+';
+file_put_contents("./output/auth.php",$auth_page);
+
 }else{
     die('Configuration File "config.json" not found!');
 }
