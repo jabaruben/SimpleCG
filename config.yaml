@@ -1,0 +1,15 @@
+db_host: 127.0.0.1
+db_user: user
+db_pw: password
+db_name: database
+admin_user: admin
+admin_pass: password
+table1:
+    name: "tb1"
+    field:
+        name: "City"
+        type: "dropdown"
+        seperator: ","
+    field:
+        name: "Name"
+        type: "textfield"
