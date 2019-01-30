@@ -95,6 +95,8 @@ if(isset($_SESSION["username"]) && isset($_SESSION["password"])){
     if($_SESSION["username"] == $auth_config["admin_user"] && $_SESSION["password"] == $auth_config["admin_pw"]){
         if(isset($_GET["redir"])){
             echo "<meta http-equiv=refresh content='."'".'0;URL=".$_GET["redir"]."'."'".' /> ";
+        }else{
+            echo "<meta http-equiv=refresh content='."'".'0;URL=list.php'."'".' /> ";
         }
     }
 }
