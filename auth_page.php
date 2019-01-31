@@ -3,6 +3,7 @@
 echo "Creating auth page...".PHP_EOL;
 $auth_page = '<?PHP
 session_start();
+$style_config = json_decode(file_get_contents("./config/style.json"), true);
 
 function generateRandomString($length = 10) {
     $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -22,7 +23,7 @@ function generateRandomString($length = 10) {
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">CRUD</a>
+  <a class="navbar-brand" href="#"><?PHP echo $style_config["org"] ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>

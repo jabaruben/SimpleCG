@@ -8,6 +8,17 @@ $fieldcount = 0;
 
 $main = array();
 
+echo "--CRUD STYLE CONFIG--".PHP_EOL; #CRUD STYLE CONFIGURATIONS
+echo "Enter navbar header:".PHP_EOL;
+$main["crud_org"] = rtrim(fgets(STDIN));
+
+echo "--ACCESS CONFIG--".PHP_EOL; #ACCES CONFIGURATIONS
+echo "Enter admin_name:";
+$main["admin_name"] = rtrim(fgets(STDIN));
+echo "Enter admin_pass:";
+$main["admin_pass"] = rtrim(fgets(STDIN));
+
+echo "--DATABASE CONFIG--".PHP_EOL; #DATABASE CONFIGURATIONS
 echo "Enter db_host:";
 $main["db_host"] = rtrim(fgets(STDIN));
 echo "Enter db_user:";
@@ -18,10 +29,6 @@ echo "Enter db_name:";
 $main["db_name"] = rtrim(fgets(STDIN));
 echo "Enter db_table:";
 $main["db_table"] = rtrim(fgets(STDIN));
-echo "Enter admin_name:";
-$main["admin_name"] = rtrim(fgets(STDIN));
-echo "Enter admin_pass:";
-$main["admin_pass"] = rtrim(fgets(STDIN));
 
 while($quit == false){
     $fieldcount = $fieldcount + 1;
