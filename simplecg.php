@@ -28,6 +28,10 @@ if(file_exists("config.json")){
     $auth_config["admin_user"] = $config["admin_name"];
     $auth_config["admin_pw"] = hash("whirlpool", $config["admin_pass"]);
     file_put_contents("./output/config/auth.json", json_encode($auth_config));
+    echo "Populating Style Config".PHP_EOL;
+    $style_config = array();
+    $style_config["org"] = $config["crud_org"];
+    file_put_contents("./output/config/style.json", json_encode($style_config));
     echo "Populating Field Config".PHP_EOL;
     $field_config = array();
     $count = 1;
@@ -69,7 +73,13 @@ include ("auth_page.php");
 
 include ("add_page.php");
 
+include ("edit_page.php");
+
 include ("stylesheet.php");
+
+include ("script.php");
+
+
 
 
 

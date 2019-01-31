@@ -3,15 +3,19 @@
 echo "Creating list page...".PHP_EOL;
 $list_page = '<?PHP
 session_start();
+$style_config = json_decode(file_get_contents("./config/style.json"), true);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <link rel="stylesheet" href="style.css" />
-
+<script src="./script.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">CRUD</a>
+  <a class="navbar-brand" href="#"><?PHP echo $style_config["org"] ?></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -59,12 +63,30 @@ if (!$mylink) {
 if(isset($_GET["action"])){
 	$action = trim($_GET["action"]);
 	if($action == "1"){
-		mysqli_query($mylink,"DELETE FROM " . $sql_config["table"] . " WHERE crud_overhead=\'".$_GET["delstr"]."\'" );
+		mysqli_query($mylink,"DELETE FROM " . $sql_config["table"] . " WHERE crud_overhead=\'".trim(filter_var($_GET["delstr"],FILTER_SANITIZE_STRING))."\'" );
 		echo \'<div class="alert alert-danger" role="alert"><b>Data entry deleted!</b><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>\';
 	}
 }
 
-
+echo \'<div class="modal" tabindex="-1" role="dialog" id="deletedialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>This action can not be reverted!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+        <a href="" id="deleteconfirm" class="btn btn-danger">Confirm</a>
+      </div>
+    </div>
+  </div>
+</div>\';
 
 echo \'<table class="table table-dark"><thead><tr><th scope="col">#</th>\';
 
@@ -92,9 +114,8 @@ while ($row = mysqli_fetch_row($result)){
 		        $totalstring = $totalstring . strtolower($counter) . "=\"" . $row[$counter] . "\"&";
             }
         $counter = $counter + 1;
-        echo $counter;
     }
-	echo "<td><a href=\'list.php?delstr=".$deletestr."&action=1\'>Delete</a></td></tr><tr>";
+	echo "<td><a class=\'badge badge-danger\' href=\'javascript:warndelete(\"".$deletestr."\")\'>Delete</a> <a class=\'badge badge-light\' href=\'edit.php?dt_tkn=".$deletestr."\'>Update</a></td></tr><tr>";
 	
 }
 echo "</tr></tbody></table>";
