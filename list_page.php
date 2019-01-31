@@ -45,7 +45,7 @@ if(isset($_SESSION["username"]) && isset($_SESSION["password"])){
 }
 
 if($authok != true){ #Redirect non-authenticated users to authentication page
-    echo "<meta http-equiv=refresh content='."'".'0;URL=auth.php'."'".' />";
+    die("<meta http-equiv=refresh content='."'".'0;URL=auth.php'."'".' />");
 }
 
 $mylink = mysqli_connect($sql_config["host"], $sql_config["username"], $sql_config["password"], $sql_config["database"]);
@@ -59,14 +59,7 @@ if (!$mylink) {
 if(isset($_GET["action"])){
 	$action = trim($_GET["action"]);
 	if($action == "1"){
-		$count = 1;
-		$totalstring = "";
-		while(array_key_exists($count,$field_config)){
-			$totalstring = $totalstring . strtolower($field_config[$count]["name"]) . " = " . $_GET[$count-1] . " AND ";
-			$count = $count + 1;
-		}
-		$totalstring = $totalstring . "1 = 1";
-		mysqli_query($mylink,"DELETE FROM " . $sql_config["table"] . " WHERE ". $totalstring);
+		mysqli_query($mylink,"DELETE FROM " . $sql_config["table"] . " WHERE crud_overhead=\'".$_GET["delstr"]."\'" );
 		echo \'<div class="alert alert-danger" role="alert"><b>Data entry deleted!</b><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>\';
 	}
 }
@@ -91,12 +84,17 @@ while ($row = mysqli_fetch_row($result)){
     $counter = 0;
 	echo "<th scope=\'row\'>".$rowc."</th>";
 	$totalstring = "";
-    while(trim($row[$counter]) != ""){
-        echo "<td>".$row[$counter]."</td>";
-		$totalstring = $totalstring . strtolower($counter) . "=\"" . $row[$counter] . "\"&";
+    while(array_key_exists($counter,$row)){
+            if(substr(trim($row[$counter]), 0, 8 ) === "delhash_"){
+                $deletestr = $row[$counter];
+            }else{
+                echo "<td>".$row[$counter]."</td>";
+		        $totalstring = $totalstring . strtolower($counter) . "=\"" . $row[$counter] . "\"&";
+            }
         $counter = $counter + 1;
+        echo $counter;
     }
-	echo "<td><a href=\'list.php?".$totalstring."action=1\'>Delete</a></td></tr><tr>";
+	echo "<td><a href=\'list.php?delstr=".$deletestr."&action=1\'>Delete</a></td></tr><tr>";
 	
 }
 echo "</tr></tbody></table>";

@@ -64,16 +64,25 @@ if($authok != true){ #Redirect non-authenticated users to authentication page
 $count = 1;
 $buildstr = "";
 $valuestr = "";
+$hashstr = "";
 while(array_key_exists($count,$field_config)){
     if(isset($_POST[$count])){
-        $valuestr = $valuestr . "\'" . $_POST[$count] . "\',";
-        $buildstr = strtolower($buildstr . $field_config[$count]["name"] . ", ");
+        if(trim($_POST[$count]) != ""){
+            $valuestr = $valuestr . "\'" . $_POST[$count] . "\',";
+            $buildstr = strtolower($buildstr . $field_config[$count]["name"] . ", ");
+            $hashstr = $hashstr . $_POST[$count];
+        }else{
+            $valuestr = $valuestr . "\' \',";
+            $buildstr = strtolower($buildstr . $field_config[$count]["name"] . ", ");
+        }
     }
     $count = $count + 1;
 }
+$hashstr = $hashstr . random_int(1,10000);
+$hashstr = hash("whirlpool",$hashstr);
 
 if(strlen($valuestr)>0){
-    mysqli_query($mylink, "INSERT INTO ".$sql_config["table"]." (".$buildstr." crud_overhead) VALUES (".$valuestr." \' \')");
+    mysqli_query($mylink, "INSERT INTO ".$sql_config["table"]." (".$buildstr." crud_overhead) VALUES (".$valuestr." \'delhash_".$hashstr."\')");
 	echo \'<div class="alert alert-success" role="alert">Data added successfully!</div>\';
 }
 
@@ -84,11 +93,17 @@ if(strlen($valuestr)>0){
 <?PHP
 $count = 1;
 while(array_key_exists($count,$field_config)){
-    echo "<b>".$field_config[$count]["name"]."</b><input type=text name=".$count." />";
+    echo \'<div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">\'.$field_config[$count]["name"].\'</span>
+      </div>
+      <input type="text" class="form-control" placeholder="\'.$field_config[$count]["name"].\'" name="\'.$count.\'">
+    </div>
+    \';
     $count = $count + 1;
 }
 ?>
-<button>Submit</button>
+<button type="submit" class="btn btn-primary">Submit</button>
 </form>
 ';
 file_put_contents("./output/add.php",$add_page);

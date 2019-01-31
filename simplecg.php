@@ -57,6 +57,12 @@ if(file_exists("config.json")){
         echo "Error: ".mysqli_error($mylink);
     }
 
+echo "Generating .htaccess for config folder".PHP_EOL;
+#Generate .htaccess for config folder
+file_put_contents("./output/config/.htaccess","order deny,allow
+deny from all
+allow from 127.0.0.1");
+
 include ("list_page.php");
 
 include ("auth_page.php");
