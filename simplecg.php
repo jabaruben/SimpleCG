@@ -63,7 +63,7 @@ include ("auth_page.php");
 
 include ("add_page.php");
 
-
+include ("stylesheet.php");
 
 
 

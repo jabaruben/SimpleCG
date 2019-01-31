@@ -15,8 +15,28 @@ function generateRandomString($length = 10) {
 }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="style.css" />
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">CRUD</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="./auth.php">Auth <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<h1 class="display-3">Auth</h1>
+
 <?PHP
 $auth_config = json_decode(file_get_contents("./config/auth.json"), true);
 if(isset($_SESSION["username"]) && isset($_SESSION["password"])){
@@ -38,6 +58,7 @@ if(isset($_POST["username"]) && isset($_POST["password"])){
         if(hash("whirlpool",$_POST["password"]) == $auth_config["admin_pw"] && $_SESSION["csrf_token"] == $_POST["csrf_token"]){
             $_SESSION["username"] = $_POST["username"];
             $_SESSION["password"] = $auth_config["admin_pw"];
+			echo "<meta http-equiv=refresh content=\'0;URL=".$_GET["redir"]."\' /> ";
         }else{
             echo "<b>Wrong Password</b>";
             echo $_SESSION["csrf_token"];

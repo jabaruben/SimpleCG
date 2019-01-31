@@ -7,8 +7,34 @@ session_start();
 
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="style.css" />
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">CRUD</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="./list.php">List</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="./add.php">Add <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="./admin.php">Admin</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<h1 class="display-3">Add</h1>
+
 <?PHP
 $authok = false;
 $auth_config = json_decode(file_get_contents("./config/auth.json"), true);
@@ -48,7 +74,7 @@ while(array_key_exists($count,$field_config)){
 
 if(strlen($valuestr)>0){
     mysqli_query($mylink, "INSERT INTO ".$sql_config["table"]." (".$buildstr." crud_overhead) VALUES (".$valuestr." \' \')");
-    echo "INSERT INTO ".$sql_config["table"]." (".$buildstr." crud_overhead) VALUES (".$valuestr.", \' \')";
+	echo \'<div class="alert alert-success" role="alert">Data added successfully!</div>\';
 }
 
 
