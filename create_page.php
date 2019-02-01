@@ -81,6 +81,7 @@ if(isset($_POST["f_0"])){
         echo "Error: ".mysqli_error($mylink);
     }
     file_put_contents("./config/fields_".$_POST["tablename"].".json", json_encode($fields));
+    file_put_contents("./config/fields.json", json_encode($fields));
     $sql_config["table"] = $_POST["tablename"];
     file_put_contents("./config/sql.json", json_encode($sql_config));
 }
