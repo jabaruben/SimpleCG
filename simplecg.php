@@ -38,10 +38,10 @@ if(file_exists("config.json")){
     while(array_key_exists("field".$count,$config)){
         $field_config[$count] = $config["field".$count];
         if($config["field".$count]["type"] == "text"){
-            $sql_field_list = $sql_field_list . "   " . strtolower($config["field".$count]["name"]) . " TEXT,\n";
+            $sql_field_list = $sql_field_list . "   " . filter_var(strtolower($config["field".$count]["name"]),FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH) . " TEXT,\n";
         }
         if($config["field".$count]["type"] == "dropdown"){
-            $sql_field_list = $sql_field_list . "   " .strtolower($config["field".$count]["name"]) . " TEXT,\n";
+            $sql_field_list = $sql_field_list . "   " .filter_var(strtolower($config["field".$count]["name"]),FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH) . " TEXT,\n";
         }
         $count = $count + 1;
     }
@@ -75,9 +75,12 @@ include ("add_page.php");
 
 include ("edit_page.php");
 
+include ("create_page.php");
+
 include ("stylesheet.php");
 
 include ("script.php");
+
 
 
 

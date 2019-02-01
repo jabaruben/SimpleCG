@@ -10,7 +10,6 @@ $style_config = json_decode(file_get_contents("./config/style.json"), true);
 <html lang="en">
 <link rel="stylesheet" href="style.css" />
 <script src="./script.js"></script>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <!-- Navbar -->
@@ -66,6 +65,29 @@ if(isset($_GET["action"])){
 		mysqli_query($mylink,"DELETE FROM " . $sql_config["table"] . " WHERE crud_overhead=\'".trim(filter_var($_GET["delstr"],FILTER_SANITIZE_STRING))."\'" );
 		echo \'<div class="alert alert-danger" role="alert"><b>Data entry deleted!</b><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>\';
 	}
+    if($action == "2"){
+        if($_GET["table"] == "new_t"){
+            die("<meta http-equiv=refresh content='."'".'0;URL=create.php'."'".' />");
+        }else{
+            $result = mysqli_query($mylink, "SHOW TABLES LIKE \'".$_GET["table"]."\'");
+            $table = mysqli_fetch_row($result)[0];
+            if($table != null){
+                file_put_contents("./config/fields_".$sql_config["table"].".json", json_encode($field_config));
+                if(file_exists("./config/fields_".$table.".json")){
+                    echo "Config found";
+                    $field_config = json_decode(file_get_contents("./config/fields_".$table.".json"), true);
+                    file_put_contents("./config/fields.json", json_encode($field_config));
+                }else{
+                    echo \'<div class="alert alert-warning" role="alert"><b>Warning!</b> Could not load table-specific field configuration file.</div>\';
+                }
+                $sql_config["table"] = $table;
+                file_put_contents("./config/sql.json",json_encode($sql_config));
+                
+            }else{
+                echo \'<div class="alert alert-danger" role="alert"><b>Error</b> Could not switch table</div>\';
+            }
+        }
+    }
 }
 
 echo \'<div class="modal" tabindex="-1" role="dialog" id="deletedialog">
@@ -87,6 +109,30 @@ echo \'<div class="modal" tabindex="-1" role="dialog" id="deletedialog">
     </div>
   </div>
 </div>\';
+
+?>
+<form action="list.php" method="get">
+<div class="form-group">
+    <label for="exampleFormControlSelect1">Table Selector</label>
+    <select class="form-control" id="exampleFormControlSelect1" name="table">
+<?PHP
+
+$answer = mysqli_query($mylink, "show tables");
+echo \'<option value="\'.$sql_config["table"].\'">Current: \'.$sql_config["table"].\'</option>\';
+while ($row = mysqli_fetch_row($answer)){
+    echo \'<option>\'.$row[0].\'</option>\';
+}
+echo \'<option value="new_t">Create...</option>\';
+?>
+    </select>
+<div class="input-group-append">
+    <button class="btn btn-outline-secondary" id="button-addon2">Switch Table</button>
+  </div>
+</div>
+<input type="hidden" name="action" value="2">
+</form>
+
+<?PHP
 
 echo \'<table class="table table-dark"><thead><tr><th scope="col">#</th>\';
 
